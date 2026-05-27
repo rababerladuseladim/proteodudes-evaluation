@@ -65,7 +65,7 @@ class UniProtConnector:
 def sample_accessions(tax2acc: dict[str, list[str]], tax_ids: list[str]) -> list[str]:
     """Sample accessions for each tax_id.
 
-    Samples min(len(accessions_of_this_tax_id), 25) accessions for each tax id in tax_ids.
+    Samples min(len(accessions_of_this_tax_id), 100) accessions for each tax id in tax_ids.
 
     Args:
         tax2acc: mapping of taxonomic identifiers to list of accessions
@@ -77,7 +77,7 @@ def sample_accessions(tax2acc: dict[str, list[str]], tax_ids: list[str]) -> list
     accessions_sample: list[str] = []
     for tax_id in tax_ids:
         accessions = tax2acc[tax_id]
-        sample_size_for_current_tax_id = min(len(accessions), 25)
+        sample_size_for_current_tax_id = min(len(accessions), 100)
         accessions_sample.extend(random.sample(accessions, sample_size_for_current_tax_id))
     return accessions_sample
 
