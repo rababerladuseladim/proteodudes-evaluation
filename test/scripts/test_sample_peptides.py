@@ -131,16 +131,19 @@ def test_sample_noise_peptides():
 
     tax2acc = {"123": ["foo"]}
     noise_taxid_population = list(tax2acc)
+    signal_peptides = ["IGHDNFRK"]
 
     with MockedUniprotConnector() as connector:
         peptides = sample_noise_peptides(
             26,
             noise_taxid_population,
             tax2acc,
+            signal_peptides,
             numpy_random_number_generator,
             connector
         )
     assert len(peptides) == 26
+    assert signal_peptides[0] not in peptides
 
 
 def test_sample_noise_peptides_raises_runtime_error(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -150,6 +153,7 @@ def test_sample_noise_peptides_raises_runtime_error(monkeypatch: pytest.MonkeyPa
     tax2acc = {"123": ["foo"]}
     noise_taxid_population = list(tax2acc)
     sequence_without_cleavage_site: str = "ACDEFGHILMNPQSTVWYV"
+    signal_peptides = []
 
     # Define replacement function
     def fake_method(self: MockedUniprotConnector, accessions: list[str]) -> dict[str, str]:
@@ -165,12 +169,13 @@ def test_sample_noise_peptides_raises_runtime_error(monkeypatch: pytest.MonkeyPa
     with MockedUniprotConnector() as connector:
         with pytest.raises(RuntimeError, match="Maximum number of tries reached: 10"):
             sample_noise_peptides(
-            2,
-            noise_taxid_population,
-            tax2acc,
-            numpy_random_number_generator,
-            connector
-        )
+                2,
+                noise_taxid_population,
+                tax2acc,
+                signal_peptides,
+                numpy_random_number_generator,
+                connector
+            )
 
 
 

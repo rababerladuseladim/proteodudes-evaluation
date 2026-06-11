@@ -120,13 +120,16 @@ def sample_peptides(
                 if tax_id not in signal_tax_ids
             ]
             noise_peptide_count = floor(noise_percentage / 100 * len(peptides))
-            peptides.extend(sample_noise_peptides(
-                noise_peptide_count,
-                noise_tax_id_population,
-                tax2acc,
-                numpy_random_number_generator,
-                uniprot_connector
-            ))
+            peptides.extend(
+                sample_noise_peptides(
+                    noise_peptide_count=noise_peptide_count,
+                    noise_tax_id_population=noise_tax_id_population,
+                    tax2acc=tax2acc,
+                    signal_peptides=peptides,
+                    numpy_random_number_generator=numpy_random_number_generator,
+                    uniprot_connector=uniprot_connector
+                )
+            )
 
     # write output
     with open(output, "w") as handle:
@@ -160,6 +163,7 @@ def sample_noise_peptides(
     noise_peptide_count: int,
     noise_tax_id_population: list[str],
     tax2acc: dict[str, list[str]],
+    signal_peptides:  list[str],
     numpy_random_number_generator: NumpyGenerator,
     uniprot_connector: UniProtConnector
 ) -> list[str]:
@@ -189,6 +193,8 @@ def sample_noise_peptides(
                 peptide_sample_current_sequence
             )
         if peptide in noise_peptides:
+            continue
+        if peptide in signal_peptides:
             continue
         noise_peptides.append(peptide)
         peptides_drawn += 1
