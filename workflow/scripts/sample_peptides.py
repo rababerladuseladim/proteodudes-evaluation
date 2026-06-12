@@ -293,20 +293,22 @@ def cleave_protein_sequence(
     return cleave(*args, missed_cleavages=missed_cleavages, **kwargs)
 
 
-def convert_fasta_str_to_dict(fasta):
-    protein_dict = {}
-    fasta = fasta.strip()
-    fasta_iter = (x[1] for x in groupby(fasta.split("\n"), lambda line: line[0] == ">"))
-
-    for header in fasta_iter:
-        # keep only uniprot accession, between pipe-chars ('|')
-        acc = header.__next__().split("|")[1]
-
-        # join all sequence lines to one.
-        seq = "".join(s.strip() for s in fasta_iter.__next__())
-
-        protein_dict[acc] = seq
-    return protein_dict
+def convert_fasta_str_to_dict(fasta: str):
+    sequences: dict[str, str] = {}
+    accession: str | None = None
+    for line in fasta.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        if line.startswith(">"):
+            # keep only uniprot accession, between pipe-chars ('|')
+            accession: str = line.split("|")[1]
+            sequences[accession] = ""
+        else:
+            if accession is None:
+                raise ValueError("Sequence line found before any header line")
+            sequences[accession] += line
+    return sequences
 
 
 snakemake: "script.Snakemake"
