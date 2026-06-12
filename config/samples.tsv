@@ -1,2 +1,2 @@
-sample_name	ground_truth	msfragger_peptides_tsv	unipept_result
-kleiner_equal_protein	"resources/kleiner_ground_truth-equal_protein-full_taxid_lineage.tsv"	"config/peptide.tsv"	"resources/unipept_results-Kleiner_P_msfragger.csv"
+sample_name	ground_truth	msfragger_peptides_tsv
+kleiner_equal_protein	"resources/kleiner_ground_truth-equal_protein-full_taxid_lineage.tsv"	"config/peptide.tsv"
