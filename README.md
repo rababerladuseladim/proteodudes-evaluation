@@ -1,4 +1,4 @@
-# Snakemake workflow: megadudes-evaluation
+# megadudes-evaluation workflow
 
 [![Snakemake](https://img.shields.io/badge/snakemake-≥7.25.0-brightgreen.svg)](https://snakemake.bitbucket.io)
 
@@ -13,7 +13,7 @@ If you use this workflow in a paper, don't forget to give credits to the authors
 1. install miniconda according to their [instructions](https://www.anaconda.com/docs/getting-started/miniconda/install/overview)
 2. clone this repo
 3. install Snakemake: `conda env create -f env.yaml`
-4. download databases (warning: requires ~100gb of disk space): `./download_resources.sh`
+4. download databases ⚠️requires ~100gb of disk space⚠️: `./download_resources.sh`
 
 ### Configuration
 
