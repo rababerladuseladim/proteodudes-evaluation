@@ -199,7 +199,7 @@ def calculate_metrics(
 
 def test_calculate_metrics(tmpdir):
     import test
-    test_data_directory = Path(test.__file__).parent / "scripts" / "plot_megadudes_qc" / "test_data"
+    test_data_directory = Path(test.__file__).parent / "scripts" / "plot_qc_taxonomic_profiling" / "test_data"
     ground_truth = test_data_directory / "ground_truth.csv"
     unipept_file = test_data_directory / "unipept.tsv"
     diamond_file = test_data_directory / "diamond.tsv"

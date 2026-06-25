@@ -1,4 +1,4 @@
-from workflow.scripts.calculate_megadudes_qc_metrics import (
+from workflow.scripts.calculate_qc_metrics_for_taxonomic_profiling import (
     calc_eval_metrics,
     read_ground_truth_file,
     get_diamond_hit_counts,
