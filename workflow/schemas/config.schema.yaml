@@ -13,7 +13,7 @@ properties:
     type: array
     items:
       type: string
-    description: "protein sequence databases to use for sequence alignment and megadudes"
+    description: "protein sequence databases to use for sequence alignment and proteodudes"
   alignment_methods:
     type: array
     items:

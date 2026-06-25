@@ -3,8 +3,8 @@ rule calculate_qc_metrics_for_taxonomic_profiling_sample:
         ground_truth=lambda wc: samples.loc[wc.sample_name, "ground_truth"],
         diamond_result="results/diamond/sample_{sample_name}-lineage.tsv",
         unipept_result="results/unipept/sample_{sample_name}.csv",
-        megadudes_results=expand(
-            "results/megadudes/{method}/sample_{{sample_name}}.out",
+        proteodudes_results=expand(
+            "results/proteodudes/{method}/sample_{{sample_name}}.out",
             method=config["alignment_methods"],
         ),
     log:
@@ -24,8 +24,8 @@ rule calculate_qc_metrics_for_taxonomic_profiling_simulation:
         ground_truth="results/simulation/sample_taxons_lineage_{repeat}.tsv",
         diamond_result="results/diamond/simulated_peptides_{repeat}_with_{percentage}_percent_noise-lineage.tsv",
         unipept_result="results/unipept/simulated_peptides_{repeat}_with_{percentage}_percent_noise.csv",
-        megadudes_results=expand(
-            "results/megadudes/{method}/simulated_peptides_{{repeat}}_with_{{percentage}}_percent_noise.out",
+        proteodudes_results=expand(
+            "results/proteodudes/{method}/simulated_peptides_{{repeat}}_with_{{percentage}}_percent_noise.out",
             method=config["alignment_methods"],
         ),
     log:
