@@ -11,13 +11,9 @@ properties:
   msfragger_peptides_tsv:
     type: string
     description: "path to peptide search result from the msfragger proteomics search engine"
-  unipept_result:
-    type: string
-    description: "path to result csv file from the unipept web service"
 
 
 required:
   - sample_name
   - ground_truth
   - msfragger_peptides_tsv
-  - unipept_result

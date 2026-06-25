@@ -91,17 +91,17 @@ def get_unipept_hit_counts(f, ground_truth_df_tax_ids):
     return df
 
 
-def get_megadudes_hit_counts(f, ground_truth_df_tax_ids):
-    df_mega = pd.read_csv(f, sep="\t", skiprows=5)
-    df_mega = df_mega.rename(lambda c: c.lower().strip("@"), axis=1)
+def get_dudes_hit_counts(f, ground_truth_df_tax_ids):
+    df_dudes = pd.read_csv(f, sep="\t", skiprows=5)
+    df_dudes = df_dudes.rename(lambda c: c.lower().strip("@"), axis=1)
     df = pd.DataFrame(columns=TAX_LEVELS, index=["TP", "FP", "FN"])
     for t in TAX_LEVELS:
-        s_mega = (
-            df_mega.loc[df_mega["rank"] == t, "taxpath"]
+        s_dudes = (
+            df_dudes.loc[df_dudes["rank"] == t, "taxpath"]
             .map(lambda x: x.split("|")[-1])
             .astype(int)
         )
-        s = get_value_overlap(s_mega, ground_truth_df_tax_ids[t])
+        s = get_value_overlap(s_dudes, ground_truth_df_tax_ids[t])
         s_classification = s.value_counts()
         for k in ["TP", "FP", "FN"]:
             if k not in s_classification:
@@ -160,7 +160,7 @@ def calc_eval_metrics(df_hits: pd.DataFrame) -> pd.DataFrame:
 def calculate_metrics(
     ground_truth_file: str,
     unipept_file: str,
-    megadudes_file_list: list[str],
+    dudes_file_list: list[str],
     output: str,
     diamond_file: str | None = None
 ):
@@ -176,16 +176,16 @@ def calculate_metrics(
     df_uni = get_unipept_hit_counts(unipept_file, df_gt_taxids)
     df_uni["method"] = "Unipept"
     hits.append(df_uni)
-    # get megadudes hits
-    for megadudes_file in megadudes_file_list:
+    # get proteodudes hits
+    for dudes_file in dudes_file_list:
         method_name = "ProteoDUDes"
-        if len(megadudes_file_list) > 1:
-            method_name += " on " + Path(megadudes_file).parent.name
-        df_mega = get_megadudes_hit_counts(
-                megadudes_file, df_gt_taxids
+        if len(dudes_file_list) > 1:
+            method_name += " on " + Path(dudes_file).parent.name
+        df_dudes = get_dudes_hit_counts(
+                dudes_file, df_gt_taxids
             )
-        df_mega["method"] = method_name
-        hits.append(df_mega)
+        df_dudes["method"] = method_name
+        hits.append(df_dudes)
     # build TP/FP/FN dataframe
     df_hits = pd.concat(hits, ignore_index=True)
     # build evaluation dataframe, containing sensitivity, precision, f1-score, fdr
@@ -199,18 +199,18 @@ def calculate_metrics(
 
 def test_calculate_metrics(tmpdir):
     import test
-    test_data_directory = Path(test.__file__).parent / "scripts" / "plot_megadudes_qc" / "test_data"
+    test_data_directory = Path(test.__file__).parent / "scripts" / "plot_qc_taxonomic_profiling" / "test_data"
     ground_truth = test_data_directory / "ground_truth.csv"
     unipept_file = test_data_directory / "unipept.tsv"
     diamond_file = test_data_directory / "diamond.tsv"
-    megadudes_file = test_data_directory / "megadudes.tsv"
+    dudes_file = test_data_directory / "proteodudes.tsv"
     output_tsv = tmpdir / "qc_metrics.tsv"
     print(output_tsv)
     calculate_metrics(
         ground_truth_file=ground_truth.as_posix(),
         diamond_file=diamond_file.as_posix(),
         unipept_file=unipept_file.as_posix(),
-        megadudes_file_list=[megadudes_file.as_posix()],
+        dudes_file_list=[dudes_file.as_posix()],
         output=output_tsv,
     )
 
@@ -223,6 +223,6 @@ if snakemake := globals().get("snakemake"):
             ground_truth_file=snakemake.input.ground_truth,
             diamond_file=snakemake.input.get("diamond_result"),
             unipept_file=snakemake.input.unipept_result,
-            megadudes_file_list=snakemake.input.megadudes_results,
+            dudes_file_list=snakemake.input.proteodudes_results,
             output=snakemake.output[0],
         )

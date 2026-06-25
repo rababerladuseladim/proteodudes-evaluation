@@ -1,21 +1,21 @@
 import os.path
 
 
-rule build_megadudes_db:
+rule build_proteodudes_db:
     input:
         idmap="resources/uniprot/idmapping_selected.tab.gz",
         uniprot_fastas=config["query_dbs"],
         ncbi_nodes="resources/ncbi/nodes.dmp",
         ncbi_names="resources/ncbi/names.dmp",
     log:
-        stdout="logs/megadudes/build_megadudes_db-stdout.txt",
-        stderr="logs/megadudes/build_megadudes_db-stderr.txt",
+        stdout="logs/proteodudes/build_proteodudes_db-stdout.txt",
+        stderr="logs/proteodudes/build_proteodudes_db-stderr.txt",
     benchmark:
-        "benchmarks/build_megadudes_db-benchmark.txt"
+        "benchmarks/build_proteodudes_db-benchmark.txt"
     output:
-        dudes_db="results/megadudes/proc/dudes_db.npz",
+        dudes_db="results/proteodudes/proc/dudes_db.npz",
     conda:
-        "../envs/megadudes.yaml"
+        "../envs/proteodudes.yaml"
     threads: 99
     params:
         db_base_name=lambda wildcards, output: os.path.splitext(output["dudes_db"])[0],
@@ -31,19 +31,21 @@ rule build_megadudes_db:
         """
 
 
-rule run_megadudes:
+rule run_proteodudes:
     input:
-        dudes_db="results/megadudes/proc/dudes_db.npz",
+        dudes_db="results/proteodudes/proc/dudes_db.npz",
         custom_blast_format_file="results/{method}/{sample}.tsv",
     log:
-        stdout="logs/megadudes/run_megadudes-{method}-{sample}-stdout.txt",
-        stderr="logs/megadudes/run_megadudes-{method}-{sample}-stderr.txt",
+        stdout="logs/proteodudes/run_proteodudes-{method}-{sample}-stdout.txt",
+        stderr="logs/proteodudes/run_proteodudes-{method}-{sample}-stderr.txt",
     benchmark:
-        "benchmarks/run_megadudes-{method}-{sample}-benchmark.txt"
+        "benchmarks/run_proteodudes-{method}-{sample}-benchmark.txt"
     output:
-        result=report("results/megadudes/{method}/{sample}.out", category="megadudes"),
+        result=report(
+            "results/proteodudes/{method}/{sample}.out", category="proteodudes"
+        ),
     conda:
-        "../envs/megadudes.yaml"
+        "../envs/proteodudes.yaml"
     threads: 99
     params:
         result_wo_ext=lambda wildcards, output: os.path.splitext(output.result)[0],

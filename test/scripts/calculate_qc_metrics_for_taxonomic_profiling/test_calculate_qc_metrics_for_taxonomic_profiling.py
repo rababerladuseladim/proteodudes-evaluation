@@ -1,10 +1,10 @@
-from workflow.scripts.calculate_megadudes_qc_metrics import (
+from workflow.scripts.calculate_qc_metrics_for_taxonomic_profiling import (
     calc_eval_metrics,
     read_ground_truth_file,
     get_diamond_hit_counts,
     get_value_overlap,
     get_unipept_hit_counts,
-    get_megadudes_hit_counts,
+    get_dudes_hit_counts,
 )
 from pathlib import Path
 from pandas.testing import assert_frame_equal, assert_series_equal
@@ -92,7 +92,7 @@ def test_get_unipept_hit_counts(ground_truth_df: pd.DataFrame) -> None:
     assert_frame_equal(expected, returned)
 
 
-def test_get_megadudes_hit_counts(ground_truth_df: pd.DataFrame) -> None:
+def test_get_dudes_hit_counts(ground_truth_df: pd.DataFrame) -> None:
     expected = pd.DataFrame(
         {
             "superkingdom": {"TP": 1, "FP": 0, "FN": 0},
@@ -106,7 +106,7 @@ def test_get_megadudes_hit_counts(ground_truth_df: pd.DataFrame) -> None:
             "eval": {"TP": "TP", "FP": "FP", "FN": "FN"},
         }
     )
-    returned = get_megadudes_hit_counts(TEST_DATA / "megadudes.tsv", ground_truth_df)
+    returned = get_dudes_hit_counts(TEST_DATA / "proteodudes.tsv", ground_truth_df)
     assert_frame_equal(expected, returned)
 
 
@@ -117,13 +117,13 @@ def test_get_megadudes_hit_counts(ground_truth_df: pd.DataFrame) -> None:
             pd.DataFrame(
                 {
                     "superkingdom": {"TP": 1, "FP": 1, "FN": 1},
-                    "method": {"TP": "megadudes", "FP": "megadudes", "FN": "megadudes"},
+                    "method": {"TP": "proteodudes", "FP": "proteodudes", "FN": "proteodudes"},
                     "eval": {"TP": "TP", "FP": "FP", "FN": "FN"},
                 }
             ),
             pd.DataFrame(
                 {
-                    "method": {0: "megadudes"},
+                    "method": {0: "proteodudes"},
                     "taxon_level": {0: "superkingdom"},
                     "Sensitivity": {0: 50.0},
                     "Precision": {0: 50.0},
@@ -136,13 +136,13 @@ def test_get_megadudes_hit_counts(ground_truth_df: pd.DataFrame) -> None:
             pd.DataFrame(
                 {
                     "superkingdom": {0: 1, 1: 1, 2: 1, 3: 3, 4: 1, 5: 1},
-                    "method": {0: "megadudes", 1: "megadudes", 2: "megadudes", 3: "diamond", 4: "diamond", 5: "diamond"},
+                    "method": {0: "proteodudes", 1: "proteodudes", 2: "proteodudes", 3: "diamond", 4: "diamond", 5: "diamond"},
                     "eval": {0: "TP", 1: "FP", 2: "FN", 3: "TP", 4: "FP", 5: "FN"},
                 }
             ),
             pd.DataFrame(
                 {
-                    "method": {0: "megadudes", 1: "diamond"},
+                    "method": {0: "proteodudes", 1: "diamond"},
                     "taxon_level": {0: "superkingdom", 1: "superkingdom"},
                     "Sensitivity": {0: 50.0, 1: 75.0},
                     "Precision": {0: 50.0, 1: 75.0},
@@ -155,13 +155,13 @@ def test_get_megadudes_hit_counts(ground_truth_df: pd.DataFrame) -> None:
             pd.DataFrame(
                 {
                     "superkingdom": {"TP": 0, "FP": 0, "FN": 1},
-                    "method": {"TP": "megadudes", "FP": "megadudes", "FN": "megadudes"},
+                    "method": {"TP": "proteodudes", "FP": "proteodudes", "FN": "proteodudes"},
                     "eval": {"TP": "TP", "FP": "FP", "FN": "FN"},
                 }
             ),
             pd.DataFrame(
                 {
-                    "method": {0: "megadudes"},
+                    "method": {0: "proteodudes"},
                     "taxon_level": {0: "superkingdom"},
                     "Sensitivity": {0: 0.0},
                     "Precision": {0: np.nan},

@@ -1,48 +1,42 @@
-# Snakemake workflow: megadudes-evaluation
+# megadudes-evaluation workflow
 
-[![Snakemake](https://img.shields.io/badge/snakemake-≥5.7.0-brightgreen.svg)](https://snakemake.bitbucket.io)
-[![Build Status](https://travis-ci.org/snakemake-workflows/megadudes-evaluation.svg?branch=master)](https://travis-ci.org/snakemake-workflows/megadudes-evaluation)
+[![Snakemake](https://img.shields.io/badge/snakemake-≥7.25.0-brightgreen.svg)](https://snakemake.bitbucket.io)
 
-This is the template for a new Snakemake workflow. Replace this text with a comprehensive description covering the purpose and domain.
-Insert your code into the respective folders, i.e. `scripts`, `rules`, and `envs`. Define the entry point of the workflow in the `Snakefile` and the main configuration in the `config.yaml` file.
-
-## Authors
-
-* Henning Schiebenhoefer (@rababerladuseladim)
+Evaluation workflow for taxonomic profiling of metaproteomic data using the [DUDes](https://github.com/pirovc/dudes) and [Unipept](https://unipept.ugent.be/). The workflow can simulate peptide data and analyze MSFragger output.
 
 ## Usage
 
-If you use this workflow in a paper, don't forget to give credits to the authors by citing the URL of this (original) repository and, if available, its DOI (see above).
+### Setup
 
-### Step 1: Obtain a copy of this workflow
+If you use this workflow in a paper, don't forget to give credits to the authors by citing the URL of this (original) repository.
 
-1. Create a new github repository using this workflow [as a template](https://help.github.com/en/articles/creating-a-repository-from-a-template).
-2. [Clone](https://help.github.com/en/articles/cloning-a-repository) the newly created repository to your local system, into the place where you want to perform the data analysis.
+1. install miniconda according to their [instructions](https://www.anaconda.com/docs/getting-started/miniconda/install/overview)
+2. clone this repo
+3. install Snakemake: `conda env create -f env.yaml`
+4. download databases ⚠️requires ~100gb of disk space⚠️: `./download_resources.sh`
 
-### Step 2: Install Snakemake
+### Configuration
 
-Install Snakemake using [conda](https://conda.io/projects/conda/en/latest/user-guide/install/index.html):
+Configure the workflow by editing the files in the `config/` folder. Adjust `config.yaml` to configure the workflow execution, and `samples.tsv` to specify your sample setup.
 
-    conda env create -f env.yaml
+#### `config.yaml`
 
-Install pre-commit by running
+| Parameter | Description |
+| --- | --- |
+| `query_dbs` | List of paths to protein sequence database files (e.g. UniProt `.fasta.gz` files) used as reference databases for sequence alignment and taxonomic profiling with DUDes. |
+| `alignment_methods` | List of alignment methods to run against each `query_dbs` entry. Supported values: `diamond`, `mmseqs2`, `mmseqs2_top_10`. |
 
-    pre-commit install
+#### `samples.tsv`
 
-For installation details, see the [instructions in the Snakemake documentation](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html).
+Tab-separated file with one row per sample to be evaluated. Required columns:
 
+| Column | Description |
+| --- | --- |
+| `sample_name` | Unique identifier for the sample. |
+| `ground_truth` | Path to a tsv file describing the expected taxonomic composition of the sample. Must contain the columns `superkingdom`, `phylum`, `class`, `order`, `family`, `genus`, `species`, `subspecies`, each holding the corresponding NCBI taxonomy ID (additional columns are ignored). |
+| `msfragger_peptides_tsv` | Path to the `peptide.tsv` output of an MSFragger search. Only the `Peptide` column is used. |
 
-### Step 3: Download Resources
-
-Download resources by executing:
-
-    ./download_resources.sh
-
-### Step 4: Configure workflow
-
-Configure the workflow according to your needs via editing the files in the `config/` folder. Adjust `config.yaml` to configure the workflow execution, and `samples.tsv` to specify your sample setup.
-
-### Step 5: Execute workflow
+### Execution
 
 Activate the conda environment:
 
@@ -56,37 +50,6 @@ Execute the workflow locally via
 
     snakemake --use-conda --cores $N --resources mem_gb=21
 
-using `$N` cores or run it in a cluster environment via
-
-    snakemake --use-conda --cluster qsub --jobs 100
-
-or
-
-    snakemake --use-conda --drmaa --jobs 100
-
-If you not only want to fix the software stack but also the underlying OS, use
-
-    snakemake --use-conda --use-singularity
-
-in combination with any of the modes above.
-See the [Snakemake documentation](https://snakemake.readthedocs.io/en/stable/executable.html) for further details.
-
-### Step 6: Investigate results
-
-After successful execution, you can create a self-contained interactive HTML report with all results via:
-
-    snakemake --report report.html
-
-This report can, e.g., be forwarded to your collaborators.
-An example (using some trivial test data) can be seen [here](https://cdn.rawgit.com/snakemake-workflows/rna-seq-kallisto-sleuth/master/.test/report.html).
-
-### Step 7: Commit changes
-
-Whenever you change something, don't forget to commit the changes back to your github copy of the repository:
-
-    git commit -a
-    git push
-
 ## Updating
 
 - update the local environment: `conda update -n snakemake --all`
@@ -94,6 +57,7 @@ Whenever you change something, don't forget to commit the changes back to your g
 - update lock-file: `conda list --explicit -n snakemake > spec-file.txt`
 - update pre-commit hooks: `pre-commit autoupdate`
 
-## Testing
+## Contributing
 
-Test cases are in the subfolder `test`. They are automatically executed via continuous integration with [GitHub Actions](https://github.com/features/actions).
+- setup pre-commit hooks: `pre-commit install`
+- execute tests: `pytest`

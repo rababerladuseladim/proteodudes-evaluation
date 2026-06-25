@@ -65,7 +65,7 @@ def qc_plots(
 
 def test_qc_plots(tmpdir):
     import test
-    test_data_directory = Path(test.__file__).parent / "rules" / "qc_megadudes" / "plot_megadudes_qc" / "data"
+    test_data_directory = Path(test.__file__).parent / "rules" / "qc_taxonomic_profiling" / "plot_qc_taxonomic_profiling" / "data"
     qc_data_file = test_data_directory / "results" / "qc" / "qc-foo.tsv"
     output_plot = tmpdir / "qc_plot.svg"
     print(output_plot)

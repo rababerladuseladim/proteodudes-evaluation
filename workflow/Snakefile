@@ -14,11 +14,11 @@ include: "rules/convert_msfragger_peptides_tsv_to_txt.smk"
 include: "rules/convert_peptides_txt_to_fasta.smk"
 include: "rules/simulate_sample.smk"
 include: "rules/run_diamond.smk"
-include: "rules/run_megadudes.smk"
+include: "rules/run_proteodudes.smk"
 include: "rules/run_mmseqs2.smk"
 include: "rules/run_unipept.smk"
 include: "rules/qc_alignment.smk"
-include: "rules/qc_megadudes.smk"
+include: "rules/qc_taxonomic_profiling.smk"
 
 
 rule all:
@@ -26,7 +26,7 @@ rule all:
         # The first rule should define the default target files
         # Subsequent target rules can be specified below. They should start with all_*.
         expand(
-            "plots/megadudes/qc-sample_{sample_name}.svg",
+            "plots/taxonomic_profiling/qc-sample_{sample_name}.svg",
             sample_name=samples["sample_name"],
         ),
         expand(
@@ -34,7 +34,7 @@ rule all:
             sample_name=samples["sample_name"],
         ),
         expand(
-            "plots/megadudes/qc-simulated_peptides_{repeat}_with_{percentage}_percent_noise.svg",
+            "plots/taxonomic_profiling/qc-simulated_peptides_{repeat}_with_{percentage}_percent_noise.svg",
             repeat=range(3),
             percentage=[0, 1, 10, 20],
         ),
