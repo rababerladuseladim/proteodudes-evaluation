@@ -1,4 +1,4 @@
-# megadudes-evaluation workflow
+# ProteoDUDes-evaluation workflow
 
 [![Snakemake](https://img.shields.io/badge/snakemake-≥7.25.0-brightgreen.svg)](https://snakemake.bitbucket.io)
 
